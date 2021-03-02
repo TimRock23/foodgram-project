@@ -13,6 +13,10 @@ def index(request):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     tags = Tag.objects.all()
-    return render(request, 'indexNotAuth.html', {'page': page,
-                                                 'paginator': paginator,
-                                                 'tags': tags})
+    return render(request, 'index.html', {'page': page,
+                                          'paginator': paginator,
+                                          'tags': tags})
+
+
+def new_recipe(request):
+    pass
