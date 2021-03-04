@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 
 
 from .models import Recipe, Tag
+from .forms import RecipeForm
 
 
 def index(request):
@@ -18,5 +19,20 @@ def index(request):
                                           'tags': tags})
 
 
+@login_required()
 def new_recipe(request):
-    pass
+    tags = Tag.objects.all()
+    if request.method != 'POST':
+        form = RecipeForm
+        return render(request, 'new_recipe.html', {'form': form,
+                                                   'tags': tags})
+
+    form = RecipeForm(request.POST, files=request.FILES)
+    if form.is_valid():
+        recipe_new = form.save(commit=False)
+        recipe_new.author = request.user
+        recipe_new.save()
+        return redirect('index')
+
+    return render(request, 'new_recipe.html', {'form': form,
+                                               'tags': tags})
