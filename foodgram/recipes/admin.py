@@ -4,7 +4,7 @@ from .models import Ingredient, Recipe, IngredientCount, Tag
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'dimension')
+    list_display = ('id', 'title', 'dimension')
     search_fields = ('name',)
     list_filter = ('dimension',)
     empty_value_display = '-пусто-'

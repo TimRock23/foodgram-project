@@ -26,6 +26,7 @@
                                         {% else %}
                                             "{% url 'new_recipe' %}"
                                         {% endif %}>
+
                 {% csrf_token %}
                 <div class="form__group">
                     <label for="id_name" class="form__label">Название рецепта</label>
@@ -38,12 +39,12 @@
                     <p class="form__label">Теги</p>
                     <div class="form__field-group">
                         <div class="tags">
-{#                            {% for tag in %}#}
-                            <div class="tags__item">
-{#                                <input type="checkbox" name="{{ tag.slug }}" id="id_{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}">#}
-                                {{ form.tag|addclass:"tags__checkbox tags__checkbox_style_orange" }}
-{#                                <label for="id_{{ tag.slug }}" class="tags__label">{{ tag.tag }}</label>#}
-                            </div>
+                            {% for tag in form.fields.tags.choices.queryset %}
+                                <div class="tags__item">
+                                    <input type="checkbox" name="{{ tag.slug }}" id="id_{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}">
+                                    <label for="id_{{ tag.slug }}" class="tags__label">{{ tag.tag }}</label>
+                                </div>
+                            {% endfor %}
 
                         </div>
                         <span class="form__error">{{ form.tag.errors }}</span>

@@ -23,7 +23,8 @@ class IngredientCount(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,
                                    related_name='count',
                                    verbose_name='ingredient')
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+    recipe = models.ForeignKey('Recipe',
+                               on_delete=models.CASCADE,
                                related_name='ingredient_count',
                                verbose_name='recipe')
     count = models.DecimalField(max_digits=6,
@@ -36,15 +37,6 @@ class IngredientCount(models.Model):
 
 
 class Tag(models.Model):
-
-    # class TagChoice(models.TextChoices):
-    #     BREAKFAST = 'br', _('Завтрак')
-    #     LUNCH = 'ln', _('Обед')
-    #     DINNER = 'dn', _('Ужин')
-    #
-    # tag = models.CharField(max_length=7, choices=TagChoice.choices,
-    #                        verbose_name='tag')
-
     tag = models.CharField(max_length=15, verbose_name='tag')
     color = models.CharField(max_length=15, verbose_name='color')
     slug = models.CharField(max_length=15, verbose_name='slug')
@@ -54,17 +46,19 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(User, on_delete=models.SET(get_unknown_user),
+    author = models.ForeignKey(User,
+                               on_delete=models.SET(get_unknown_user),
                                related_name='recipes',
                                verbose_name='author')
     name = models.CharField('recipe', max_length=255)
     image = models.ImageField(upload_to='recipes/')
     description = models.TextField('description', max_length=1000)
-    ingredients = models.ManyToManyField(IngredientCount,
-                                         through='IngredientCount',
+    ingredients = models.ManyToManyField(Ingredient,
+                                         through=IngredientCount,
                                          related_name='recipes',
                                          verbose_name='ingredient')
-    tag = models.ManyToManyField(Tag, related_name='recipes',
+    tag = models.ManyToManyField(Tag,
+                                 related_name='recipes',
                                  verbose_name='tag')
     duration = models.PositiveSmallIntegerField('cooking time')
     pub_date = models.DateTimeField('publication time', auto_now_add=True)
