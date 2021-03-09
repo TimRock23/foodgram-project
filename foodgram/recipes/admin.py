@@ -10,11 +10,16 @@ class IngredientAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+class IngredientCountInline(admin.TabularInline):
+    model = IngredientCount
+
+
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('id', 'author', 'name', 'duration',)
     search_fields = ('author', 'name',)
     list_filter = ('tag',)
     empty_value_display = '-пусто-'
+    inlines = (IngredientCountInline,)
 
 
 class IngredientCountAdmin(admin.ModelAdmin):

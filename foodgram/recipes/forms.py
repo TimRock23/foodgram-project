@@ -1,4 +1,4 @@
-from django.forms import ModelForm, CheckboxSelectMultiple
+from django.forms import ModelForm, CheckboxSelectMultiple, Textarea
 
 from .models import Recipe
 
@@ -6,8 +6,8 @@ from .models import Recipe
 class RecipeForm(ModelForm):
     class Meta:
         model = Recipe
-        fields = ('name', 'tag', 'duration', 'description',
-                  'image')
+        fields = ('name', 'tag', 'duration', 'description', 'image')
         widgets = {
-            'tags': CheckboxSelectMultiple()
+            'tag': CheckboxSelectMultiple(),
+            'description': Textarea(attrs={'rows': '8'}),
         }

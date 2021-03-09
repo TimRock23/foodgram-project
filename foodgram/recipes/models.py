@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -30,7 +31,7 @@ class IngredientCount(models.Model):
     count = models.DecimalField(max_digits=6,
                                 decimal_places=2,
                                 verbose_name='count',
-                                validators=[MinValueValidator(1)])
+                                validators=[MinValueValidator(0.01)])
 
     def __str__(self):
         return self.ingredient.title
