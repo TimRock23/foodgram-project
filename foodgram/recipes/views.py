@@ -97,3 +97,26 @@ def recipe_edit(request, username, recipe_id):
 def recipe_view(request, username, recipe_id):
     recipe = get_object_or_404(Recipe, author__username=username, id=recipe_id)
     return render(request, 'recipe.html', {'recipe': recipe})
+
+
+def profile(request, username):
+    author = get_object_or_404(User, username=username)
+    recipes_list = author.recipes.order_by('-pub_date').all()
+    paginator = Paginator(recipes_list, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    tags = Tag.objects.all()
+    return render(request, 'profile.html', {'page': page,
+                                            'author': author,
+                                            'paginator': paginator,
+                                            'tags': tags})
+
+
+@login_required
+def follow_page(request):
+    following_authors = request.user.follower.all()
+    paginator = Paginator(following_authors, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    return render(request, 'myFollow.html', {'page': page,
+                                             'paginator': paginator})

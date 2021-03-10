@@ -4,11 +4,13 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('follow/', views.follow_page, name='follow_page'),
     path('recipe/new', views.new_recipe, name='new_recipe'),
     path('<str:username>/<int:recipe_id>/',
          views.recipe_view,
          name='recipe_id'),
     path('<str:username>/<int:recipe_id>/edit/',
          views.recipe_edit,
-         name='recipe_edit')
+         name='recipe_edit'),
+    path('<str:username>/', views.profile, name='profile')
 ]
