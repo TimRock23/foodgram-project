@@ -74,7 +74,7 @@
 
                             {% if recipe %}
                                 {% for ingredient in recipe.ingredients.all %}
-                                    <div class="form__field-item-ingredient" id="ing_3">
+                                    <div class="form__field-item-ingredient" id="ing_{{ ingredient.id }}">
                                         <span> {{ ingredient.title }} {{ ingredient.count.count }} {{ ingredient.dimension }}</span>
                                         <span class="form__field-item-delete"></span>
                                         <input id="nameIngredient_{{ ingredient.id }}" name="nameIngredient_{{ ingredient.id }}" type="hidden" value="{{ ingredient.title }}">

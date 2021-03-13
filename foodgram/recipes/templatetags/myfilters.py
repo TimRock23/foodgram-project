@@ -1,5 +1,7 @@
 from django import template
 
+from users.models import Follow
+
 
 register = template.Library()
 
@@ -21,3 +23,8 @@ def count_format(word, count):
         return word + 'а'
     else:
         return word + 'ов'
+
+
+@register.filter()
+def is_subscribed(author, user):
+    return Follow.objects.filter(user=user, author=author).exists()

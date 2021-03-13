@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block content %}
+    {% csrf_token %}
     <main class="main container">
         <div class="main__header">
             <h1 class="main__title">Мои подписки</h1>
@@ -16,7 +17,7 @@
 
             {% for follow in page %}
 
-                <div class="card-user" data-author="700">
+                <div class="card-user" data-author="{{ follow.author.id }}">
                     <div class="card-user__header">
                         <h2 class="card-user__title">{{ follow.author.first_name }} {{ follow.author.last_name }}</h2>
                     </div>
@@ -46,9 +47,10 @@
                             {% endwith %}
                         </ul>
                     </div>
-                    <div class="card-user__footer">
-                        <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
-                    </div>
+
+                    <button class="button button_style_light-blue button_size_auto"
+                            name="subscribe"> Отписаться
+                    </button>
                 </div>
 
             {% endfor %}

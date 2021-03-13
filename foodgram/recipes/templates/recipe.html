@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load myfilters %}
 {% block title %}
     {{ recipe.name }}
 {% endblock %}
@@ -8,8 +9,9 @@
 {% endblock %}
 
 {% block content %}
+    {% csrf_token %}
     <main class="main container">
-        <div class="single-card" data-id="371" data-author="12">
+        <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
 
             {% load thumbnail %}
             {% thumbnail recipe.image "480x480" as im %}
@@ -49,10 +51,20 @@
 
                 {% if user.is_authenticated %}
                     <ul class="single-card__items">
-                        <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
+                        <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span>Добавить в покупки</button></li>
 
                         {% if user != recipe.author %}
-                        <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></li>
+                             {% if recipe.author|is_subscribed:user %}
+                                <li class="single-card__item">
+                                    <button class="button button_style_light-blue button_size_auto"
+                                            name="subscribe"> Отписаться от автора
+                                    </button>
+                            {% else %}
+                                <li class="single-card__item">
+                                    <button class="button button_style_light-blue button_size_auto"
+                                            name="subscribe" data-out>Подписаться на автора
+                                    </button>
+                            {% endif %}
                         {% endif %}
 
                     </ul>
@@ -78,16 +90,15 @@
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'js/components/Purchases.js '%}"></script>
+<script src="{% static 'js/components/Purchases.js'%}"></script>
 <script src="{% static 'js/components/Favorites.js' %}"></script>
 <script src="{% static 'js/components/Subscribe.js' %}"></script>
 <script src="{% static 'js/config/config.js' %}"></script>
 
 <script src="{% static 'js/components/MainCards.js' %}"></script>
-<script src="{% static 'js/components/SingleCard.js '%}"></script>
+<script src="{% static 'js/components/SingleCard.js'%}"></script>
 <script src="{% static 'js/components/Header.js' %}"></script>
 
 <script src="{% static 'js/api/Api.js' %}"></script>
 <script src="{% static 'singlePage.js' %}"></script>
-</body>
 {% endblock %}

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
 
+from users.models import Follow
 from .models import Recipe, Tag, IngredientCount, Ingredient, User
 from .forms import RecipeForm
 
