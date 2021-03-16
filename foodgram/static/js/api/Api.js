@@ -19,7 +19,8 @@ class Api {
     return fetch(`${this.apiUrl}/purchases`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value
       },
       body: JSON.stringify({
         id: id
@@ -36,7 +37,8 @@ class Api {
     return fetch(`${this.apiUrl}/purchases/${id}`, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value
       }
     })
       .then( e => {
@@ -47,7 +49,7 @@ class Api {
       })
   }
   addSubscriptions(id) {
-    return fetch(`${this.apiUrl}/subscriptions/`, {
+    return fetch(`${this.apiUrl}/subscriptions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -65,10 +67,11 @@ class Api {
       })
   }
   removeSubscriptions (id) {
-    return fetch(`${this.apiUrl}/subscriptions/${id}/`, {
+    return fetch(`${this.apiUrl}/subscriptions/${id}`, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value
       }
     })
       .then( e => {
@@ -82,7 +85,8 @@ class Api {
     return fetch(`${this.apiUrl}/favorites`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value
       },
       body: JSON.stringify({
         id: id
@@ -99,7 +103,8 @@ class Api {
     return fetch(`${this.apiUrl}/favorites/${id}`, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value
       }
     })
         .then( e => {

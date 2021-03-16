@@ -144,3 +144,5 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend'
     ]
 }
+
+OBJECTS_PER_PAGE = 6

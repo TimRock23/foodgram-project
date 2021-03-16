@@ -2,10 +2,11 @@ from django.shortcuts import get_object_or_404, render, redirect, \
     HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.conf import settings
 
 
 from users.models import Follow
-from .models import Recipe, Tag, IngredientCount, Ingredient, User
+from .models import Recipe, Tag, IngredientCount, Ingredient, User, Favorite
 from .forms import RecipeForm
 
 
@@ -34,7 +35,7 @@ def save_ingredients(ingredients, recipe):
 
 def index(request):
     recipes_list = Recipe.objects.order_by('-pub_date').all()
-    paginator = Paginator(recipes_list, 6)
+    paginator = Paginator(recipes_list, settings.OBJECTS_PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     tags = Tag.objects.all()
@@ -103,7 +104,7 @@ def recipe_view(request, username, recipe_id):
 def profile(request, username):
     author = get_object_or_404(User, username=username)
     recipes_list = author.recipes.order_by('-pub_date').all()
-    paginator = Paginator(recipes_list, 6)
+    paginator = Paginator(recipes_list, settings.OBJECTS_PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     tags = Tag.objects.all()
@@ -116,8 +117,20 @@ def profile(request, username):
 @login_required
 def follow_page(request):
     following_authors = request.user.follower.all()
-    paginator = Paginator(following_authors, 6)
+    paginator = Paginator(following_authors, settings.OBJECTS_PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'myFollow.html', {'page': page,
                                              'paginator': paginator})
+
+
+@login_required
+def favorite_page(request):
+    favorite_recipes = Recipe.objects.filter(fav_recipes__user=request.user)
+    paginator = Paginator(favorite_recipes, settings.OBJECTS_PER_PAGE)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    tags = Tag.objects.all()
+    return render(request, 'favorite.html', {'page': page,
+                                             'paginator': paginator,
+                                             'tags': tags})

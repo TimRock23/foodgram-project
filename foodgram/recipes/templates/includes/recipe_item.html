@@ -1,4 +1,6 @@
-<div class="card">
+{% load myfilters %}
+{% csrf_token %}
+<div class="card" data-id="{{ recipe.id }}">
     <a href="{% url 'recipe_id' recipe.author.username recipe.id %}" class="link">
         {% load thumbnail %}
         {% thumbnail recipe.image "480x480" as im %}
@@ -19,8 +21,14 @@
     </div>
     <div class="card__footer">
         <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+
         {% if user.is_authenticated %}
-            <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+            {% if recipe|in_favorites:request.user %}
+                <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
+            {% else %}
+                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+            {% endif %}
         {% endif %}
+
     </div>
 </div>

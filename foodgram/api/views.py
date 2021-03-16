@@ -1,6 +1,6 @@
-import json
 from django.shortcuts import render
 from rest_framework import viewsets, mixins, generics, filters
+from rest_framework.response import Response
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from django.shortcuts import get_object_or_404
@@ -8,8 +8,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import  View
 from django.http import JsonResponse
 
-from .serializers import IngredientSerializer, FollowSerializer
-from recipes.models import Ingredient
+from .serializers import (IngredientSerializer, FollowSerializer,
+                          FavoriteSerializer)
+
+from recipes.models import Ingredient, Favorite
 from users.models import User, Follow
 
 
@@ -19,6 +21,11 @@ class CreateDeleteViewSet(mixins.CreateModelMixin,
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({'success': True})
 
 
 class IngredientsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -38,10 +45,10 @@ class SubscriptionsViewSet(CreateDeleteViewSet):
 
     def get_object(self):
         queryset = self.get_queryset()
-        url_id = self.kwargs.get(self.lookup_field)
+        author_id = self.kwargs.get(self.lookup_field)
         obj = get_object_or_404(queryset,
                                 user=self.request.user,
-                                author__id=url_id)
+                                author__id=author_id)
         return obj
 
     # def perform_create(self, serializer):
@@ -50,4 +57,16 @@ class SubscriptionsViewSet(CreateDeleteViewSet):
     #         Follow.objects.get_or_create(user=self.request.user,
     #                                      author=following)
 
+
+class FavoritesViewSet(CreateDeleteViewSet):
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteSerializer
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        recipe_id = self.kwargs.get(self.lookup_field)
+        obj = get_object_or_404(queryset,
+                                user=self.request.user,
+                                recipe__id=recipe_id)
+        return obj
 

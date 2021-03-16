@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block title %}Рецепты{% endblock %}
 
 {% block stylesheet %}
@@ -28,25 +27,25 @@
         </div>
 
         {% if page.has_other_pages %}
-            {% include "includes/paginator.html" with items=page paginator=paginator%}
+            {% include "includes/paginator.html" with items=page paginator=paginator %}
         {% endif %}
     </main>
 {% endblock %}
 
 {% block js %}
-
     <script src="{% static 'js/components/MainCards.js' %}"></script>
     <script src="{% static 'js/components/Purchases.js' %}"></script>
-
-    {% if user.is_authenticated %}
-        <script src="{% static 'js/components/Favorites.js' %}"></script>
-    {% endif %}
 
     <script src="{% static 'js/config/config.js' %}"></script>
     <script src="{% static 'js/components/CardList.js' %}"></script>
     <script src="{% static 'js/components/Header.js' %}"></script>
 
     <script src="{% static 'js/api/Api.js' %}"></script>
-    <script src="{% static 'indexNotAuth.js' %}"></script>
-{% endblock %}
 
+    {% if user.is_authenticated %}
+        <script src="{% static 'js/components/Favorites.js' %}"></script>
+        <script src="{% static 'indexAuth.js' %}"></script>
+    {% else %}
+        <script src="{% static 'indexNotAuth.js' %}"></script>
+    {% endif %}
+{% endblock %}
