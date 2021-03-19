@@ -6,31 +6,9 @@ from django.conf import settings
 
 
 from users.models import Follow
-from .models import Recipe, Tag, IngredientCount, Ingredient, User, Favorite
+from .models import Recipe, Tag, IngredientAmount, Ingredient, User, Favorite
 from .forms import RecipeForm
-
-
-def get_ingredients(request):
-    ingredients = {}
-    for key in request.POST:
-        if key.startswith('nameIngredient'):
-            value = key[15:]
-            ingredients[request.POST[key]] = request.POST[
-                'valueIngredient_' + value]
-    return ingredients
-
-
-def save_ingredients(ingredients, recipe):
-
-    if recipe.ingredients.exists():
-        IngredientCount.objects.filter(recipe=recipe).delete()
-
-    for key in ingredients:
-        IngredientCount.objects.create(
-            count=ingredients[key],
-            ingredient=Ingredient.objects.get(title=key),
-            recipe=recipe,
-        )
+from . import services
 
 
 def index(request):
@@ -39,9 +17,14 @@ def index(request):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     tags = Tag.objects.all()
+    purchase_count = services.get_purchase_count_from_session(
+        request.session)
+    title = 'Рецепты'
     return render(request, 'index.html', {'page': page,
+                                          'tags': tags,
+                                          'title': title,
                                           'paginator': paginator,
-                                          'tags': tags})
+                                          'purchase_count': purchase_count})
 
 
 @login_required()
@@ -52,16 +35,7 @@ def new_recipe(request):
 
     form = RecipeForm(request.POST, files=request.FILES)
     if form.is_valid():
-        recipe = form.save(commit=False)
-        recipe.author = request.user
-        ingredients = get_ingredients(request)
-
-        if len(ingredients) == 0:
-            return render(request, 'new_recipe.html', {'form': form})
-
-        recipe.save()
-        save_ingredients(ingredients, recipe)
-        form.save_m2m()
+        services.save_recipe(request, form)
         return redirect('index')
 
     return render(request, 'new_recipe.html', {'form': form})
@@ -82,18 +56,24 @@ def recipe_edit(request, username, recipe_id):
                       instance=recipe)
 
     if form.is_valid():
-        recipe_changed = form.save(commit=False)
-        ingredients = get_ingredients(request)
-
-        if len(ingredients) == 0:
-            return render(request, 'new_recipe.html', {'form': form})
-
-        recipe_changed.save()
-        save_ingredients(ingredients, recipe_changed)
-        form.save_m2m()
+        services.save_recipe(request, form)
         return redirect('index')
 
     return render(request, 'new_recipe.html', {'recipe': recipe, 'form': form})
+
+
+@login_required
+def recipe_delete(request, username, recipe_id):
+    user = get_object_or_404(User, username=username)
+    recipe = get_object_or_404(Recipe, author=user, id=recipe_id)
+
+    if request.user != user:
+        return redirect('recipe_id',
+                        username=recipe.author.username,
+                        recipe_id=recipe_id)
+
+    recipe.delete()
+    return redirect('index')
 
 
 def recipe_view(request, username, recipe_id):
@@ -108,10 +88,12 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     tags = Tag.objects.all()
-    return render(request, 'profile.html', {'page': page,
-                                            'author': author,
-                                            'paginator': paginator,
-                                            'tags': tags})
+    title = author.get_full_name()
+    return render(request, 'index.html', {'page': page,
+                                          'tags': tags,
+                                          'title': title,
+                                          'author': author,
+                                          'paginator': paginator})
 
 
 @login_required
@@ -131,6 +113,41 @@ def favorite_page(request):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     tags = Tag.objects.all()
-    return render(request, 'favorite.html', {'page': page,
-                                             'paginator': paginator,
-                                             'tags': tags})
+    title = 'Избранное'
+    return render(request, 'index.html', {'tags': tags,
+                                          'page': page,
+                                          'title': title,
+                                          'paginator': paginator})
+
+
+def purchase_page(request):
+    recipes = services.get_purchase_recipes_from_session(request.session)
+    is_empty = False
+    if len(recipes) == 0:
+        is_empty = True
+    return render(request, 'shopList.html', {'recipes': recipes,
+                                             'is_empty': is_empty})
+
+
+def del_recipe_from_purchase(request, recipe_id):
+    try:
+        recipes = request.session['recipe_ids']
+    except KeyError:
+        return redirect('purchase')
+    if recipe_id not in recipes:
+        return redirect('purchase')
+    recipes.remove(recipe_id)
+    request.session['recipe_ids'] = recipes
+    return redirect('purchase')
+
+
+def download_shop_list(request):
+    shop_list = services.create_shop_list(request.session)
+    return shop_list
+
+# recipe = get_object_or_404(Recipe, pk=recipe_id)
+# ingredients = IngredientAmount.objects.filter(recipe=recipe).all()
+# for ingredient in ingredients:
+#     title = ingredient.ingredient.title
+#     dimension = ingredient.ingredient.dimension
+#     amount = ingredient.amount

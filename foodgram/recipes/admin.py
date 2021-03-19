@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Ingredient, Recipe, IngredientCount, Tag, Favorite
+from .models import Ingredient, Recipe, IngredientAmount, Tag, Favorite
 
 
 class IngredientAdmin(admin.ModelAdmin):
@@ -10,8 +10,8 @@ class IngredientAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-class IngredientCountInline(admin.TabularInline):
-    model = IngredientCount
+class IngredientAmountInline(admin.TabularInline):
+    model = IngredientAmount
 
 
 class RecipeAdmin(admin.ModelAdmin):
@@ -19,11 +19,11 @@ class RecipeAdmin(admin.ModelAdmin):
     search_fields = ('author', 'name',)
     list_filter = ('tag',)
     empty_value_display = '-пусто-'
-    inlines = (IngredientCountInline,)
+    inlines = (IngredientAmountInline,)
 
 
-class IngredientCountAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ingredient', 'count')
+class IngredientAmountAdmin(admin.ModelAdmin):
+    list_display = ('id', 'ingredient', 'amount')
     search_fields = ('ingredient',)
     list_filter = ('ingredient',)
     empty_value_display = '-пусто-'
@@ -45,5 +45,5 @@ class FavoriteAdmin(admin.ModelAdmin):
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Tag, TagAdmin)
-admin.site.register(IngredientCount, IngredientCountAdmin)
+admin.site.register(IngredientAmount, IngredientAmountAdmin)
 admin.site.register(Favorite, FavoriteAdmin)

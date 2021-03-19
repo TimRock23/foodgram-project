@@ -16,7 +16,7 @@ class Api {
       })
   }
   addPurchases (id) {
-    return fetch(`${this.apiUrl}/purchases`, {
+    return fetch(`${this.apiUrl}/purchases/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ class Api {
       })
   }
   removePurchases (id){
-    return fetch(`${this.apiUrl}/purchases/${id}`, {
+    return fetch(`${this.apiUrl}/purchases/${id}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

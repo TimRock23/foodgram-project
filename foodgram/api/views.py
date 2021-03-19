@@ -1,12 +1,15 @@
 from django.shortcuts import render
-from rest_framework import viewsets, mixins, generics, filters
+from rest_framework import viewsets, mixins, generics, filters, status
 from rest_framework.response import Response
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import  View
+from rest_framework.decorators import api_view
 from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+import json
 
 from .serializers import (IngredientSerializer, FollowSerializer,
                           FavoriteSerializer)
@@ -51,12 +54,6 @@ class SubscriptionsViewSet(CreateDeleteViewSet):
                                 author__id=author_id)
         return obj
 
-    # def perform_create(self, serializer):
-    #     following = get_object_or_404(User, id=self.request.data['id'])
-    #     if self.request.user != following:
-    #         Follow.objects.get_or_create(user=self.request.user,
-    #                                      author=following)
-
 
 class FavoritesViewSet(CreateDeleteViewSet):
     queryset = Favorite.objects.all()
@@ -70,3 +67,42 @@ class FavoritesViewSet(CreateDeleteViewSet):
                                 recipe__id=recipe_id)
         return obj
 
+
+@api_view(['POST'])
+def add_recipe_to_purchase(request):
+    if request.method != 'POST':
+        return Response(data={'success': False},
+                        status=status.HTTP_403_FORBIDDEN)
+    # recipe_id = json.loads(request.body).get('id')
+    recipe_id = request.data.get('id')
+    if recipe_id is None:
+        return Response(data={'success': False},
+                        status=status.HTTP_400_BAD_REQUEST)
+    recipe_id = int(recipe_id)
+    recipes = request.session.get('recipe_ids')
+    if not recipes:
+        recipes = []
+    # recipe_id = int(recipe_id)
+    recipes.append(recipe_id)
+    request.session['recipe_ids'] = recipes
+    return Response(data={'success': True},
+                    status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+def delete_recipe_from_purchase_api(request, id):
+    if request.method != 'DELETE':
+        return Response(data={'success': False},
+                        status=status.HTTP_403_FORBIDDEN)
+    try:
+        recipes = request.session['recipe_ids']
+    except KeyError:
+        return Response(data={'success': False},
+                        status=status.HTTP_404_NOT_FOUND)
+    if id not in recipes:
+        return Response(data={'success': False},
+                        status=status.HTTP_404_NOT_FOUND)
+    recipes.remove(id)
+    request.session['recipe_ids'] = recipes
+    return Response(data={'success': True},
+                    status=status.HTTP_200_OK)

@@ -20,18 +20,15 @@ class Ingredient(models.Model):
         return self.title
 
 
-class IngredientCount(models.Model):
+class IngredientAmount(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,
-                                   related_name='count',
+                                   related_name='amount',
                                    verbose_name='ingredient')
     recipe = models.ForeignKey('Recipe',
                                on_delete=models.CASCADE,
-                               related_name='ingredient_count',
+                               related_name='ingredient_amount',
                                verbose_name='recipe')
-    count = models.DecimalField(max_digits=6,
-                                decimal_places=2,
-                                verbose_name='count',
-                                validators=[MinValueValidator(0.01)])
+    amount = models.PositiveSmallIntegerField('amount')
 
     def __str__(self):
         return self.ingredient.title
@@ -55,7 +52,7 @@ class Recipe(models.Model):
     image = models.ImageField(upload_to='recipes/')
     description = models.TextField('description', max_length=1000)
     ingredients = models.ManyToManyField(Ingredient,
-                                         through=IngredientCount,
+                                         through=IngredientAmount,
                                          related_name='recipes',
                                          verbose_name='ingredient')
     tag = models.ManyToManyField(Tag,

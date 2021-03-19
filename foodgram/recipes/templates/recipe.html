@@ -66,7 +66,7 @@
                              {% if recipe.author|is_subscribed:user %}
                                 <li class="single-card__item">
                                     <button class="button button_style_light-blue button_size_auto"
-                                            name="subscribe"> Отписаться от автора
+                                            name="subscribe">Отписаться от автора
                                     </button>
                             {% else %}
                                 <li class="single-card__item">
@@ -83,8 +83,8 @@
                     <h3 class="single-card__section-title">Ингридиенты:</h3>
                     <div class="single-card__items single-card__items_column">
 
-                        {% for ingredient in recipe.ingredients.all %}
-                            <p class=" single-card__section-item">{{ ingredient.title }} - {{ ingredient.count.count }} {{ ingredient.dimension }}</p>
+                        {% for ingredient in recipe.ingredient_amount.all %}
+                            <p class=" single-card__section-item">{{ ingredient.ingredient.title }} - {{ ingredient.amount }} {{ ingredient.ingredient.dimension }}</p>
                         {% endfor %}
 
                     </div>

@@ -100,7 +100,7 @@
                     </div>
                 </div>
                 <div class="form__group">
-                    <label for="id_description" class="form__label">Описание</label>
+                    <label for="{{ form.description.id_for_label }}" class="form__label">Описание</label>
                     <div class="form__field-group">
                         {{ form.description|addclass:"form__textarea" }}
                         <span class="form__error">{{ form.description.errors }}</span>
@@ -117,7 +117,7 @@
 
                 <div class="form__footer">
                     {% if recipe %}
-                        <button class="button button_style_blue">Сохранить</button> <a style="margin-left: 2.5em" href="#" class="form__ingredient-link">Удалить</a>
+                        <button class="button button_style_blue">Сохранить</button> <a style="margin-left: 2.5em" href="{% url 'recipe_delete' user.username recipe.id %}" class="form__ingredient-link">Удалить</a>
                     {% else %}
                         <button class="button button_style_blue">Создать рецепт</button>
                     {% endif %}
