@@ -1,13 +1,13 @@
-from rest_framework import viewsets, mixins, status
-from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from .serializers import (IngredientSerializer, FollowSerializer,
-                          FavoriteSerializer)
-
-from recipes.models import Ingredient, Favorite
+from recipes.models import Favorite, Ingredient
 from users.models import Follow
+
+from .serializers import (FavoriteSerializer, FollowSerializer,
+                          IngredientSerializer)
 
 
 class CreateDeleteViewSet(mixins.CreateModelMixin,

@@ -1,11 +1,11 @@
-from django.shortcuts import get_object_or_404, render, redirect
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.conf import settings
+from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Recipe, User
-from .forms import RecipeForm
 from . import services
+from .forms import RecipeForm
+from .models import Recipe, User
 
 
 def index(request):

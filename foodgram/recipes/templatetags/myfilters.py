@@ -1,8 +1,7 @@
 from django import template
 
-from users.models import Follow
 from recipes.models import Favorite
-
+from users.models import Follow
 
 register = template.Library()
 

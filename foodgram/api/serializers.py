@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 
-from recipes.models import Ingredient, Favorite, Recipe
-from users.models import User, Follow
+from recipes.models import Favorite, Ingredient, Recipe
+from users.models import Follow, User
 
 
 class IngredientSerializer(serializers.ModelSerializer):
