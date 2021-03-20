@@ -134,4 +134,4 @@ LOGOUT_REDIRECT_URL = 'index'
 
 OBJECTS_PER_PAGE = 6
 
-TAGS = ('breakfast', 'lunch', 'dinner',)
+TAGS = ('breakfast', 'lunch', 'dinner')
