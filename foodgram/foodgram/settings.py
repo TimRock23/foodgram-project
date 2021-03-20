@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     'recipes',
     'api',
     'django.contrib.admin',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -46,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
@@ -135,3 +138,5 @@ LOGOUT_REDIRECT_URL = 'index'
 OBJECTS_PER_PAGE = 6
 
 TAGS = ('breakfast', 'lunch', 'dinner')
+
+SITE_ID = 1

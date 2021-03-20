@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ flatpage.title }}{% endblock %}
+
+{% block stylesheet %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <main class="main container">
+        <h1>{{ flatpage.title }}</h1>
+        {{ flatpage.content }}
+    </main>
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/components/MainCards.js' %}"></script>
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+{% endblock %}
