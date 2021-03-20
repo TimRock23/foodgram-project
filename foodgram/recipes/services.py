@@ -10,6 +10,7 @@ from .models import Ingredient, IngredientAmount, Recipe, Tag
 
 
 def get_ingredients(request):
+    """Достать ингредиенты и их количество при создании рецепта"""
     ingredients = {}
     for key in request.POST:
         if key.startswith('nameIngredient'):
@@ -20,6 +21,7 @@ def get_ingredients(request):
 
 
 def save_ingredients(ingredients, recipe):
+    """Сохранить ингредиенты рецепта в БД"""
     if recipe.ingredients.exists():
         IngredientAmount.objects.filter(recipe=recipe).delete()
 
@@ -32,6 +34,7 @@ def save_ingredients(ingredients, recipe):
 
 
 def save_recipe(request, form):
+    """Сохранить рецепт в БД"""
     recipe = form.save(commit=False)
     recipe.author = request.user
     ingredients = get_ingredients(request)
@@ -45,12 +48,14 @@ def save_recipe(request, form):
 
 
 def get_purchase_recipes_from_session(session):
+    """Получить список рецептов, добавленных в список покупок"""
     recipes_ids = session.get('recipe_ids')
     recipes = Recipe.objects.filter(pk__in=recipes_ids)
     return recipes
 
 
 def create_shop_list(session):
+    """Создать текстовый файл со списком покупок и отправить пользователю"""
     recipes = get_purchase_recipes_from_session(session)
     ingredients = recipes.values(
         'ingredients__title',
@@ -70,6 +75,7 @@ def create_shop_list(session):
 
 
 def get_active_tags(request):
+    """Получить список активных тегов для фильтрации рецептов"""
     tags = set()
     if 'tags' in request.GET:
         tags = set(request.GET.getlist('tags'))
@@ -78,10 +84,12 @@ def get_active_tags(request):
 
 
 def filter_by_tags(recipes, tags):
+    """Отфильтровать рецепты по тегам"""
     return recipes.filter(tag__slug__in=tags).distinct()
 
 
 def get_context(request, recipes_list):
+    """Создание контекста для генерации страниц"""
     tags_active = get_active_tags(request)
     if tags_active:
         recipes_list = filter_by_tags(recipes_list, tags_active)
