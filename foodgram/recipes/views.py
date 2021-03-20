@@ -100,9 +100,9 @@ def favorite_page(request):
 
 def purchase_page(request):
     recipes = services.get_purchase_recipes_from_session(request.session)
-    is_empty = False
-    if len(recipes) == 0:
-        is_empty = True
+    is_empty = True
+    if recipes is not None and len(recipes) != 0:
+        is_empty = False
     return render(request, 'shopList.html', {'recipes': recipes,
                                              'is_empty': is_empty})
 

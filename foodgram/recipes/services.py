@@ -50,8 +50,9 @@ def save_recipe(request, form):
 def get_purchase_recipes_from_session(session):
     """Получить список рецептов, добавленных в список покупок"""
     recipes_ids = session.get('recipe_ids')
-    recipes = Recipe.objects.filter(pk__in=recipes_ids)
-    return recipes
+    if recipes_ids is not None:
+        recipes = Recipe.objects.filter(pk__in=recipes_ids)
+        return recipes
 
 
 def create_shop_list(session):

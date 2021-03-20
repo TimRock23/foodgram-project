@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '#&13mpg03#g3919%^x_21^32=fmlj9ej0eta0gxtj^u$(z-+oa'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '*',
@@ -140,3 +140,6 @@ OBJECTS_PER_PAGE = 6
 TAGS = ('breakfast', 'lunch', 'dinner')
 
 SITE_ID = 1
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
