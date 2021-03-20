@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load myfilters %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block stylesheet %}
@@ -11,12 +12,16 @@
         <div class="main__header">
             <h1 class="main__title">{{ title }}</h1>
             <ul class="tags">
+
                 {% for tag in tags %}
                     <li class="tags__item">
-                        <a class="tags__checkbox tags__checkbox_style_{{ tag.color }} tags__checkbox_active" href="#"></a>
+                        <a id="{{ tag.slug }}"
+                           class="tags__checkbox tags__checkbox_style_{{ tag.color }} {% if tag.slug in tags_active %}tags__checkbox_active{% endif %}"
+                           href="{% if tag.slug in tags_active %}{% deactivate_tag request tags_active tag.slug %}{% else %}{% activate_tag request.get_full_path tag.slug %}{% endif %}"></a>
                         <span class="tags__label">{{ tag }}</span>
                     </li>
                 {% endfor %}
+
             </ul>
         </div>
 

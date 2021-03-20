@@ -1,21 +1,13 @@
-from django.shortcuts import render
-from rest_framework import viewsets, mixins, generics, filters, status
+from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
-from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import  View
 from rest_framework.decorators import api_view
-from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
-import json
 
 from .serializers import (IngredientSerializer, FollowSerializer,
                           FavoriteSerializer)
 
 from recipes.models import Ingredient, Favorite
-from users.models import User, Follow
+from users.models import Follow
 
 
 class CreateDeleteViewSet(mixins.CreateModelMixin,
@@ -73,7 +65,6 @@ def add_recipe_to_purchase(request):
     if request.method != 'POST':
         return Response(data={'success': False},
                         status=status.HTTP_403_FORBIDDEN)
-    # recipe_id = json.loads(request.body).get('id')
     recipe_id = request.data.get('id')
     if recipe_id is None:
         return Response(data={'success': False},
@@ -82,7 +73,6 @@ def add_recipe_to_purchase(request):
     recipes = request.session.get('recipe_ids')
     if not recipes:
         recipes = []
-    # recipe_id = int(recipe_id)
     recipes.append(recipe_id)
     request.session['recipe_ids'] = recipes
     return Response(data={'success': True},

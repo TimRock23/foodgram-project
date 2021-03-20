@@ -1,15 +1,13 @@
-from django.shortcuts import get_object_or_404, render, redirect, \
-    HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
 from django.core.paginator import Paginator
 from django.conf import settings
 
 from django.db.models import Sum
 from django.http import HttpResponse
 
-from users.models import Follow
-from .models import Recipe, Tag, IngredientAmount, Ingredient, User, Favorite
-from .forms import RecipeForm
+from .models import Recipe, Tag, IngredientAmount, Ingredient
+from foodgram.settings import TAGS
 
 
 def get_ingredients(request):
@@ -47,14 +45,6 @@ def save_recipe(request, form):
     form.save_m2m()
 
 
-def get_purchase_count_from_session(session):
-    recipe_ids = session.get('recipe_ids')
-    if recipe_ids is None:
-        return 0
-    else:
-        return len(recipe_ids)
-
-
 def get_purchase_recipes_from_session(session):
     recipes_ids = session.get('recipe_ids')
     recipes = Recipe.objects.filter(pk__in=recipes_ids)
@@ -80,9 +70,28 @@ def create_shop_list(session):
     return response
 
 
-# ingredients = IngredientCount.objects.filter(recipe=recipe).all()
-# for ingredient in ingredients:
-#     title = ingredient.ingredient.title
-#     dimension = ingredient.ingredient.dimension
-#     count = ingredient.count
+def get_active_tags(request):
+    tags = set()
+    if 'tags' in request.GET:
+        tags = set(request.GET.getlist('tags'))
+        tags.intersection_update(set(TAGS))
+    return tags
 
+
+def filter_by_tags(recipes, tags):
+    return recipes.filter(tag__slug__in=tags).distinct()
+
+
+def get_context(request, recipes_list):
+    tags_active = get_active_tags(request)
+    if tags_active:
+        recipes_list = filter_by_tags(recipes_list, tags_active)
+    paginator = Paginator(recipes_list, settings.OBJECTS_PER_PAGE)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    tags = Tag.objects.all()
+    context = {'page': page,
+               'tags': tags,
+               'paginator': paginator,
+               'tags_active': tags_active}
+    return context
