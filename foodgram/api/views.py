@@ -28,10 +28,13 @@ class IngredientsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def get_queryset(self):
         queryset = Ingredient.objects.all()
-        title = self.request.query_params.get('query', None)
-        if title is not None:
-            queryset = queryset.filter(title__startswith=title)
-            return queryset
+        title = self.request.query_params.get('query')
+        if title is None:
+            return Response(data={'success': False},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        queryset = queryset.filter(title__startswith=title)
+        return queryset
 
 
 class SubscriptionsViewSet(CreateDeleteViewSet):
@@ -62,9 +65,6 @@ class FavoritesViewSet(CreateDeleteViewSet):
 
 @api_view(['POST'])
 def add_recipe_to_purchase(request):
-    if request.method != 'POST':
-        return Response(data={'success': False},
-                        status=status.HTTP_403_FORBIDDEN)
     recipe_id = request.data.get('id')
     if recipe_id is None:
         return Response(data={'success': False},
@@ -81,9 +81,6 @@ def add_recipe_to_purchase(request):
 
 @api_view(['DELETE'])
 def delete_recipe_from_purchase_api(request, id):
-    if request.method != 'DELETE':
-        return Response(data={'success': False},
-                        status=status.HTTP_403_FORBIDDEN)
     try:
         recipes = request.session['recipe_ids']
     except KeyError:

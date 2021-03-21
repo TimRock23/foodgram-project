@@ -7,7 +7,6 @@ from .models import Favorite, Ingredient, IngredientAmount, Recipe, Tag
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('title', 'dimension')
     search_fields = ('title',)
-    list_filter = ('title',)
 
 
 class IngredientAmountInline(admin.TabularInline):
@@ -18,7 +17,7 @@ class IngredientAmountInline(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('author', 'name', 'duration', 'count_of_favs')
     search_fields = ('author', 'name', 'name',)
-    list_filter = ('author', 'tag',)
+    list_filter = ('author', 'tags',)
     empty_value_display = '-пусто-'
     inlines = (IngredientAmountInline,)
 

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load myfilters %}
+{% load html_tags %}
 
 {% block title %}
     {% if recipe %}
@@ -40,21 +40,21 @@
                     <div class="form__field-group">
                         <div class="tags">
 
-                            {% for tag_choice, tag_value in form.tag.field.choices %}
+                            {% for tag_choice, tag_value in form.tags.field.choices %}
                                 <div class="tags__item">
                                     <input
                                         type="checkbox"
-                                        name="tag"
+                                        name="tags"
                                         value="{{ tag_choice.instance.id }}"
                                         id="id_{{ tag_choice.instance.value }}"
                                         class="tags__checkbox tags__checkbox_style_{{ tag_choice.instance.color }}"
-                                        {% if tag_choice.instance in form.instance.tag.all %} checked {% endif %}>
+                                        {% if tag_choice.instance in form.instance.tags.all %} checked {% endif %}>
                                     <label for="id_{{ tag_choice.instance.value }}" class="tags__label">{{ tag_choice.instance.tag }}</label>
                                 </div>
                             {% endfor %}
 
                         </div>
-                        <span class="form__error">{{ form.tag.errors }}</span>
+                        <span class="form__error">{{ form.tags.errors }}</span>
                     </div>
                 </div>
 
@@ -73,13 +73,13 @@
                         <div class="form__field-group-ingredientes-container">
 
                             {% if recipe %}
-                                {% for ingredient in recipe.ingredients.all %}
-                                    <div class="form__field-item-ingredient" id="ing_{{ ingredient.id }}">
-                                        <span> {{ ingredient.title }} {{ ingredient.count.count }} {{ ingredient.dimension }}</span>
+                                {% for ingredient in recipe.ingredient_amounts.all %}
+                                    <div class="form__field-item-ingredient" id="ing_{{ forloop.counter }}">
+                                        <span> {{ ingredient.ingredient.title }} {{ ingredient.amount }} {{ ingredient.ingredient.dimension }}</span>
                                         <span class="form__field-item-delete"></span>
-                                        <input id="nameIngredient_{{ ingredient.id }}" name="nameIngredient_{{ ingredient.id }}" type="hidden" value="{{ ingredient.title }}">
-                                        <input id="valueIngredient_{{ ingredient.id }}" name="valueIngredient_{{ ingredient.id }}" type="hidden" value="{{ ingredient.count.count }}">
-                                        <input id="unitsIngredient_{{ ingredient.id }}" name="unitsIngredient_{{ ingredient.id }}" type="hidden" value="{{ ingredient.dimension }}">
+                                        <input id="nameIngredient_{{ forloop.counter }}" name="nameIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.ingredient.title }}">
+                                        <input id="valueIngredient_{{ forloop.counter }}" name="valueIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.amount }}">
+                                        <input id="unitsIngredient_{{ forloop.counter }}" name="unitsIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.ingredient.dimension }}">
                                     </div>
                                 {% endfor %}
                             {% endif %}

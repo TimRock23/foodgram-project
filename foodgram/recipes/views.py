@@ -17,14 +17,9 @@ def index(request):
 
 @login_required()
 def new_recipe(request):
-    if request.method != 'POST':
-        form = RecipeForm
-        return render(request, 'new_recipe.html', {
-            'form': form})
-
-    form = RecipeForm(request.POST, files=request.FILES)
+    form = RecipeForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
-        services.save_recipe(request, form)
+        form.save_recipe(request)
         return redirect('index')
 
     return render(request, 'new_recipe.html', {'form': form})
@@ -32,10 +27,9 @@ def new_recipe(request):
 
 @login_required
 def recipe_edit(request, username, recipe_id):
-    user = get_object_or_404(User, username=username)
-    recipe = get_object_or_404(Recipe, author=user, id=recipe_id)
+    recipe = get_object_or_404(Recipe, author__username=username, id=recipe_id)
 
-    if request.user != user:
+    if request.user != recipe.author:
         return redirect('recipe_id',
                         username=recipe.author.username,
                         recipe_id=recipe_id)
@@ -45,7 +39,7 @@ def recipe_edit(request, username, recipe_id):
                       instance=recipe)
 
     if form.is_valid():
-        services.save_recipe(request, form)
+        form.save_recipe(request)
         return redirect('index')
 
     return render(request, 'new_recipe.html', {'form': form,
@@ -54,10 +48,9 @@ def recipe_edit(request, username, recipe_id):
 
 @login_required
 def recipe_delete(request, username, recipe_id):
-    user = get_object_or_404(User, username=username)
-    recipe = get_object_or_404(Recipe, author=user, id=recipe_id)
+    recipe = get_object_or_404(Recipe, author__username=username, id=recipe_id)
 
-    if request.user != user:
+    if request.user != recipe.author:
         return redirect('recipe_id',
                         username=recipe.author.username,
                         recipe_id=recipe_id)

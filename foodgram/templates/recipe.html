@@ -1,8 +1,10 @@
 {% extends "base.html" %}
-{% load myfilters %}
+{% load html_tags %}
+
 {% block title %}
     {{ recipe.name }}
 {% endblock %}
+
 {% block stylesheet %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'pages/single.css' %}">
@@ -41,7 +43,7 @@
                 </div>
                 <ul class="single-card__items">
 
-                    {% for tag in recipe.tag.all %}
+                    {% for tag in recipe.tags.all %}
                         <li class="single-card__item"><span class="badge badge_style_{{ tag.color }}">{{ tag.tag }}</span></li>
                     {% endfor %}
 
@@ -83,7 +85,7 @@
                     <h3 class="single-card__section-title">Ингридиенты:</h3>
                     <div class="single-card__items single-card__items_column">
 
-                        {% for ingredient in recipe.ingredient_amount.all %}
+                        {% for ingredient in recipe.ingredient_amounts.all %}
                             <p class=" single-card__section-item">{{ ingredient.ingredient.title }} - {{ ingredient.amount }} {{ ingredient.ingredient.dimension }}</p>
                         {% endfor %}
 

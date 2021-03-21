@@ -1,7 +1,6 @@
 from django import template
 
 from recipes.models import Favorite
-from users.models import Follow
 
 register = template.Library()
 
@@ -27,7 +26,7 @@ def count_format(word, count):
 
 @register.filter
 def is_subscribed(author, user):
-    return Follow.objects.filter(user=user, author=author).exists()
+    return user.follower.filter(author=author).exists()
 
 
 @register.filter

@@ -16,7 +16,7 @@ router.register(r'favorites',
 
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('purchases/', views.add_recipe_to_purchase),
-    path('purchases/<int:id>/', views.delete_recipe_from_purchase_api),
+    path('v1/', include(router.urls)),
+    path('v1/purchases/', views.add_recipe_to_purchase),
+    path('v1/purchases/<int:id>/', views.delete_recipe_from_purchase_api),
 ]

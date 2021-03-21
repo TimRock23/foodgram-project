@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 
 from foodgram.settings import TAGS
 
@@ -28,23 +28,9 @@ def save_ingredients(ingredients, recipe):
     for key in ingredients:
         IngredientAmount.objects.create(
             amount=ingredients[key],
-            ingredient=Ingredient.objects.get(title=key),
+            ingredient=get_object_or_404(Ingredient, title=key),
             recipe=recipe,
         )
-
-
-def save_recipe(request, form):
-    """Сохранить рецепт в БД"""
-    recipe = form.save(commit=False)
-    recipe.author = request.user
-    ingredients = get_ingredients(request)
-
-    if len(ingredients) == 0:
-        return render(request, 'new_recipe.html', {'form': form})
-
-    recipe.save()
-    save_ingredients(ingredients, recipe)
-    form.save_m2m()
 
 
 def get_purchase_recipes_from_session(session):
@@ -61,14 +47,14 @@ def create_shop_list(session):
     ingredients = recipes.values(
         'ingredients__title',
         'ingredients__dimension').annotate(
-            total_amount=Sum('ingredient_amount__amount')
+            total_amount=Sum('ingredient_amounts__amount')
     )
     filename = 'shopping_list.txt'
     content = ''
     for ingredient in ingredients:
-        string = f'{ingredient["ingredients__title"]} ' \
-                 f'({ingredient["ingredients__dimension"]}) — ' \
-                 f'{ingredient["total_amount"]}'
+        string = (f'{ingredient["ingredients__title"]} '
+                  f'({ingredient["ingredients__dimension"]}) — '
+                  f'{ingredient["total_amount"]}')
         content += string + '\n'
     response = HttpResponse(content=content, content_type='text/plain')
     response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -86,7 +72,7 @@ def get_active_tags(request):
 
 def filter_by_tags(recipes, tags):
     """Отфильтровать рецепты по тегам"""
-    return recipes.filter(tag__slug__in=tags).distinct()
+    return recipes.filter(tags__slug__in=tags).distinct()
 
 
 def get_context(request, recipes_list):
