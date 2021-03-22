@@ -9,7 +9,7 @@ from .models import Recipe, User
 
 
 def index(request):
-    recipes_list = Recipe.objects.order_by('-pub_date').all()
+    recipes_list = Recipe.objects.all()
     context = services.get_context(request, recipes_list)
     context['title'] = 'Рецепты'
     return render(request, 'index.html', context)
@@ -66,7 +66,7 @@ def recipe_view(request, username, recipe_id):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    recipes_list = author.recipes.order_by('-pub_date').all()
+    recipes_list = author.recipes.all()
     context = services.get_context(request, recipes_list)
     context['title'] = author.get_full_name()
     context['author'] = author

@@ -11,12 +11,12 @@ class Ingredient(models.Model):
     title = models.CharField('Название ингредиента', max_length=255)
     dimension = models.CharField('единица измерения', max_length=255)
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+
+    def __str__(self):
+        return self.title
 
 
 class IngredientAmount(models.Model):
@@ -39,12 +39,12 @@ class Tag(models.Model):
     slug = models.CharField(max_length=15,
                             verbose_name='Название на английском')
 
-    def __str__(self):
-        return self.tag
-
     class Meta:
         verbose_name = 'Тэг'
         verbose_name_plural = 'Тэги'
+
+    def __str__(self):
+        return self.tag
 
 
 class Recipe(models.Model):
@@ -66,13 +66,13 @@ class Recipe(models.Model):
     duration = models.PositiveSmallIntegerField('Время приготовления')
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         ordering = ('-pub_date',)
+
+    def __str__(self):
+        return self.name
 
 
 class Favorite(models.Model):
