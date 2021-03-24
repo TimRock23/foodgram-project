@@ -23,7 +23,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Link with flake8
-        run: flake8 . --exclude api/migrations,recipes/migrations,users/migrations,foodgram/settings.py,foodgram/urls.py
+        run: flake8 . --exclude foodgram/api/migrations,foodgram/recipes/migrations,foodgram/users/migrations,foodgram/foodgram/settings.py,foodgram/foodgram/urls.py
 
 
   build_and_push_to_docker_hub:
