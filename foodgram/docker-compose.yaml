@@ -1,0 +1,41 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+  static_files:
+  media_files:
+  nginx_config:
+
+services:
+  db:
+    image: postgres:12.4
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+
+  web:
+    image: timrock/foodgram:latest
+    restart: always
+    volumes:
+      - static_files:/code/static
+      - media_files:/code/media
+      - nginx_config:/code/nginx
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+    entrypoint: /code/entrypoint.sh
+
+  nginx:
+    image: library/nginx:1.19.6
+    restart: always
+    volumes:
+      - nginx_config:/etc/nginx/conf.d/
+      - static_files:/code/static/
+      - media_files:/code/media/
+    ports:
+    - "80:80"
+    depends_on:
+      - web
