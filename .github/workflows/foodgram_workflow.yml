@@ -30,6 +30,9 @@ jobs:
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./foodgram
     needs: tests
     if: github.ref == 'refs/heads/master'
     steps:
@@ -52,6 +55,9 @@ jobs:
     env:
       PROJECT_ROOT: ~/www/foodgram
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./foodgram
     needs: build_and_push_to_docker_hub
     if: github.ref == 'refs/heads/master'
     steps:
