@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Change dir
-        run: : |
+        run: |
           cd foodgram
       - name: Install dependencies
         run: |
@@ -34,8 +34,8 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Change dir
-        run: : |
-               cd foodgram
+        run: |
+          cd foodgram
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
@@ -59,8 +59,8 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Change dir
-        run: : |
-               cd foodgram
+        run: |
+          cd foodgram
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: copy docker-compose and nginx
