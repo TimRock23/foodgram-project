@@ -4,13 +4,14 @@ on: [push]
 
 
 jobs:
+
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Set environment variables
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.НOST }}
+          host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
