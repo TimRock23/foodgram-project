@@ -2,17 +2,17 @@ name: foodgram workflow
 
 on: [push]
 
-jobs:
 
+jobs:
   deploy:
-   runs-on: ubuntu-latest
-   steps:
-     - name: Set environment variables
-       uses: appleboy/ssh-action@master
-       with:
-         host: ${{ secrets.НOST }}
-         username: ${{ secrets.USER }}
-         key: ${{ secrets.SSH_KEY }}
-         passphrase: ${{ secrets.PASSPHRASE }}
-         script: |
-           whoami && echo "Молодцом"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set environment variables
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.НOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
+            whoami && echo "Молодцом"
