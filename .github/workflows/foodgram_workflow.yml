@@ -45,8 +45,6 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram:latest
 
   deploy:
-    env:
-      PROJECT_ROOT: ~/www/foodgram
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
     if: github.ref == 'refs/heads/master'
@@ -60,7 +58,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           source: "docker-compose.yaml, nginx/default.conf"
-          target: ${{ env.PROJECT_ROOT}}
+          target: "code"
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
@@ -69,7 +67,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            cd ${{ env.PROJECT_ROOT }}
+            cd ~/code
             sudo apt-get update -y
             sudo apt-get remove docker docker-engine docker.io -y
             sudo apt install docker.io docker-compose -y
