@@ -130,6 +130,6 @@ dmypy.json
 
 static/
 media/
-staticfiles/
 .idea/
 identifier.sqlite
+tests/
