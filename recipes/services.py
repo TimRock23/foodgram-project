@@ -20,6 +20,50 @@ def get_ingredients(request):
     return ingredients
 
 
+def check_ingredients_value(ingredients):
+    """Проверка на то, что количество всех ингредиентов больше 0"""
+    for ing_amount in ingredients.values():
+        if int(ing_amount) <= 0:
+            return True
+        return False
+
+
+def check_ingredients_exist(ingredients):
+    """Проверка на существование ингредиента в БД"""
+    for ingredient in ingredients.keys():
+        try:
+            Ingredient.objects.get(title=ingredient)
+        except Ingredient.DoesNotExist:
+            return True
+        return False
+
+
+def check_ingredients(ingredients):
+    """Проверка, что передан хотябы 1 ингредиент"""
+    if len(ingredients) == 0:
+        return True
+    return False
+
+
+def validate_ingredients(form, ingredients):
+    """Валидация ингредиентов"""
+    if check_ingredients(ingredients):
+        context = {'form': form,
+                   'ingr_error': 'Введите как минимум 1 ингредиент'}
+        return context
+
+    if check_ingredients_exist(ingredients):
+        context = {'form': form,
+                   'ingr_error': 'Такого ингредиента пока нет в базе'}
+        return context
+
+    if check_ingredients_value(ingredients):
+        context = {'form': form,
+                   'ingr_error':
+                       'Вы ввели отрицательное число ингредиентов'}
+        return context
+
+
 def save_ingredients(ingredients, recipe):
     """Сохранить ингредиенты рецепта в БД"""
     if recipe.ingredients.exists():
@@ -44,11 +88,10 @@ def get_purchase_recipes_from_session(session):
 def create_shop_list(session):
     """Создать текстовый файл со списком покупок и отправить пользователю"""
     recipes = get_purchase_recipes_from_session(session)
-    ingredients = recipes.values(
+    ingredients = recipes.order_by('ingredients__title').values(
         'ingredients__title',
         'ingredients__dimension').annotate(
-            total_amount=Sum('ingredient_amounts__amount')
-    )
+            total_amount=Sum('ingredient_amounts__amount'))
     filename = 'shopping_list.txt'
     content = ''
     for ingredient in ingredients:

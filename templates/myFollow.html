@@ -41,16 +41,20 @@
 
                             {% with follow.author.recipes.count as count %}
                                 {% if count > 3 %}
-                                    <a href="{% url 'profile' follow.author.username %}" class="card-user__link link">
-                                        Еще {{ count|add:'-3' }} {{ 'рецепт'|count_format:follow.author.recipes.count }}...</a>
+                                    <li class="card-user__item">
+                                        <a href="{% url 'profile' follow.author.username %}" class="card-user__link link">
+                                            Еще {{ count|add:'-3' }} {{ 'рецепт'|count_format:follow.author.recipes.count }}...</a>
+                                    </li>
                                 {% endif %}
                             {% endwith %}
                         </ul>
                     </div>
 
-                    <button class="button button_style_light-blue button_size_auto"
-                            name="subscribe"> Отписаться
-                    </button>
+                    <div class="card-user__footer">
+                        <button class="button button_style_light-blue button_size_auto"
+                                name="subscribe">Отписаться
+                        </button>
+                    </div>
                 </div>
 
             {% endfor %}
@@ -65,11 +69,12 @@
 {% endblock %}
 
 {% block js %}
+    <script src="{% static 'js/components/Subscribe.js' %}"></script>
     <script src="{% static 'js/config/config.js' %}"></script>
     <script src="{% static 'js/components/MainCards.js' %}"></script>
-    <script src="{% static 'js/components/MyFollow.js' %}"></script>
-    <script src="{% static 'js/components/Subscribe.js' %}"></script>
+    <script src="{% static 'js/components/SingleCard.js' %}"></script>
     <script src="{% static 'js/components/Header.js' %}"></script>
     <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'js/components/MyFollow.js' %}"></script>
     <script src="{% static 'myFollow.js' %}"></script>
 {% endblock %}

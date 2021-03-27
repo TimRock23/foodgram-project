@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load html_tags %}
 
 {% block title %}Войти на сайт{% endblock %}
 {% block stylesheet %}
@@ -22,7 +23,7 @@
             <div class="form__group">
                 <label for="id_{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
                 <div class="form__field-group">
-                    {{ field }}
+                    {{ field|addclass:"form__input" }}
                     <span class="form__error">{{ field.errors }}</span>
                 </div>
             </div>

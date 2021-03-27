@@ -1,8 +1,7 @@
 from django.forms import CheckboxSelectMultiple, ModelForm, Textarea
-from django.shortcuts import render
 
 from .models import Recipe
-from .services import get_ingredients, save_ingredients
+from .services import save_ingredients
 
 
 class RecipeForm(ModelForm):
@@ -14,14 +13,10 @@ class RecipeForm(ModelForm):
             'description': Textarea(attrs={'rows': '8'}),
         }
 
-    def save_recipe(self, request):
+    def save_recipe(self, request, ingredients):
         """Сохранить рецепт в БД"""
         recipe = self.save(commit=False)
         recipe.author = request.user
-        ingredients = get_ingredients(request)
-
-        if len(ingredients) == 0:
-            return render(request, 'new_recipe.html', {'form': self})
 
         recipe.save()
         save_ingredients(ingredients, recipe)

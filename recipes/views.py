@@ -19,7 +19,13 @@ def index(request):
 def new_recipe(request):
     form = RecipeForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
-        form.save_recipe(request)
+        ingredients = services.get_ingredients(request)
+
+        context = services.validate_ingredients(form, ingredients)
+        if context:
+            return render(request, 'new_recipe.html', context)
+
+        form.save_recipe(request, ingredients)
         return redirect('index')
 
     return render(request, 'new_recipe.html', {'form': form})
@@ -39,6 +45,11 @@ def recipe_edit(request, username, recipe_id):
                       instance=recipe)
 
     if form.is_valid():
+        ingredients = services.get_ingredients(request)
+        context = services.validate_ingredients(form, ingredients)
+        if context:
+            return render(request, 'new_recipe.html', context)
+
         form.save_recipe(request)
         return redirect('index')
 

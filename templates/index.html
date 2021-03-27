@@ -25,6 +25,22 @@
             </ul>
         </div>
 
+        {% if request.resolver_match.url_name == 'profile' and user.is_authenticated and user != author %}
+            {% csrf_token %}
+            <div class="author-subscribe" data-author="{{ author.id }}">
+                    <p style="padding: 0 0 2em 0;">
+                        {% if author|is_subscribed:user %}
+                            <button class="button button_style_light-blue button_size_auto"
+                                    name="subscribe">Отписаться от автора</button>
+                        {% else %}
+                            <button class="button button_style_light-blue button_size_auto"
+                                    name="subscribe" data-out>Подписаться на автора</button>
+                        {% endif %}
+                    </p>
+            </div>
+
+        {% endif %}
+
         <div class="card-list">
             {% for recipe in page %}
                 {% include "includes/recipe_item.html" with recipe=recipe %}
@@ -38,19 +54,28 @@
 {% endblock %}
 
 {% block js %}
-    <script src="{% static 'js/components/MainCards.js' %}"></script>
-    <script src="{% static 'js/components/Purchases.js' %}"></script>
+    <script src="{% static "js/components/MainCards.js" %}"></script>
+    <script src="{% static "js/components/Purchases.js" %}"></script>
+    <script src="{% static "js/components/Favorites.js" %}"></script>
+    <script src="{% static "js/config/config.js" %}"></script>
+    <script src="{% static "js/components/CardList.js" %}"></script>
+    <script src="{% static "js/components/Header.js" %}"></script>
+    <script src="{% static "js/api/Api.js" %}"></script>
 
-    <script src="{% static 'js/config/config.js' %}"></script>
-    <script src="{% static 'js/components/CardList.js' %}"></script>
-    <script src="{% static 'js/components/Header.js' %}"></script>
+    {% if request.resolver_match.url_name == 'index' %}
 
-    <script src="{% static 'js/api/Api.js' %}"></script>
+        {% if user.is_authenticated %}
+            <script src="{% static "indexAuth.js" %}"></script>
+        {% else %}
+            <script src="{% static 'indexNotAuth.js' %}"></script>
+        {% endif %}
 
-    {% if user.is_authenticated %}
-        <script src="{% static 'js/components/Favorites.js' %}"></script>
-        <script src="{% static 'indexAuth.js' %}"></script>
-    {% else %}
-        <script src="{% static 'indexNotAuth.js' %}"></script>
+    {% endif %}
+
+    <script src="{% static "js/components/Subscribe.js" %}"></script>
+    <script src="{% static "js/components/AuthorRecipe.js" %}"></script>
+
+    {% if request.resolver_match.url_name != 'index' %}
+        <script src="{% static "authorRecipe.js" %}"></script>
     {% endif %}
 {% endblock %}
