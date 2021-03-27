@@ -61,9 +61,8 @@
                 </div>
 
                 <ul class="single-card__items">
-
+                    {% csrf_token %}
                     {% if recipe.id in request.session.recipe_ids %}
-                        {% csrf_token %}
                         <li class="single-card__item"><button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button></li>
                     {% else %}
                         <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span>Добавить в покупки</button></li>
