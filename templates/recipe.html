@@ -63,6 +63,7 @@
                 <ul class="single-card__items">
 
                     {% if recipe.id in request.session.recipe_ids %}
+                        {% csrf_token %}
                         <li class="single-card__item"><button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button></li>
                     {% else %}
                         <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span>Добавить в покупки</button></li>
@@ -103,15 +104,15 @@
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'js/components/Purchases.js'%}"></script>
-<script src="{% static 'js/components/Favorites.js' %}"></script>
-<script src="{% static 'js/components/Subscribe.js' %}"></script>
-<script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/Purchases.js'%}"></script>
+    <script src="{% static 'js/components/Favorites.js' %}"></script>
+    <script src="{% static 'js/components/Subscribe.js' %}"></script>
+    <script src="{% static 'js/config/config.js' %}"></script>
 
-<script src="{% static 'js/components/MainCards.js' %}"></script>
-<script src="{% static 'js/components/SingleCard.js'%}"></script>
-<script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/components/MainCards.js' %}"></script>
+    <script src="{% static 'js/components/SingleCard.js'%}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
 
-<script src="{% static 'js/api/Api.js' %}"></script>
-<script src="{% static 'singlePage.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'singlePage.js' %}"></script>
 {% endblock %}
